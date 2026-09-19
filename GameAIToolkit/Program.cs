@@ -1,4 +1,4 @@
-using GameAIToolkit.Client.Pages;
+// using GameAIToolkit.Client.Pages;
 using GameAIToolkit.Components;
 using MudBlazor.Services;
 
@@ -8,7 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(options =>
+
+{
+    options.PopoverOptions.ThrowOnDuplicateProvider = false;
+}); 
 
 var app = builder.Build();
 
