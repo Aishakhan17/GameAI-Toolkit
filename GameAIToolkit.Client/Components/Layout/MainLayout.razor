@@ -1,11 +1,12 @@
-﻿@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase;
+
 <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@CustomThemes.CustomTheme.Silvertheme"/>
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer"/>
         <h1>Game AI Toolkit</h1>
         <MudSpacer />
         <MudSwitch @bind-Value="_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode" />

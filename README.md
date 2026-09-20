@@ -1,3 +1,7 @@
 # GameAIToolkit
 
-<!-- https://themes.mudx.org/export -->
+Theme generated from:
+https://themes.mudx.org/export
+
+Inspiration:
+https://lkforge.com/tools/pathfinding-visualizer/
