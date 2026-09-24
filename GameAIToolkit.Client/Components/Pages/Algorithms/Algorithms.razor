@@ -1,0 +1,22 @@
+@page "/algorithms"
+@* @layout MainLayout *@
+<PageTitle>Algorithms</PageTitle>
+
+<MudGrid Class="page-grid">
+    <MudItem xs="0" sm="3" Class="sidebar-item">
+        <NavMenu />        
+    </MudItem>
+    <MudItem xs="12" sm="9">
+        <h1 class="font-display">Algorithms</h1>
+    </MudItem>
+</MudGrid>
+
+
+
+@code {
+    private bool _open = true;
+    private void ToggleDrawer()
+    {
+        _open = !_open;
+    }
+}

@@ -1,0 +1,29 @@
+@using System.Diagnostics.CodeAnalysis
+@using System.Runtime.CompilerServices
+@using MudBlazor.State
+<div class="node">
+    <p class="text-white">@Id</p>
+</div>
+
+@code {
+    [Parameter]        
+    public required int Id {get; set;}
+
+    [Parameter]
+    public int Value {get; set;}
+
+    [Parameter]        
+    public bool Visited {get; set;}
+
+    public class Node
+    {
+        public required int Id { get; set; }
+        public required int Value { get; set; }
+        public required bool Visited { get; set; }
+
+        public void displayValues(int Id, int Value, bool Visited)
+        {
+            Console.WriteLine($"id {this.Id}, Value {this.Value}, Visited {this.Visited}");
+        }
+    }
+}

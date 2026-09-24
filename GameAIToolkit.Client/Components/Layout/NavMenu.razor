@@ -1,21 +1,29 @@
-﻿<MudNavMenu>
-    <MudNavGroup Title="Pathfinding Algorithms">
-            <MudNavLink Match="NavLinkMatch.All" Href="/bfs">BFS</MudNavLink>
-            <MudNavLink Match="NavLinkMatch.All" Href="/Astar">A*</MudNavLink>
-            <MudNavLink Match="NavLinkMatch.All" Href="/djikstra">Djikstra</MudNavLink>
-    </MudNavGroup>
-    
-    <MudNavGroup Title="Search Algorithms">
-        <MudNavLink Match="NavLinkMatch.All" Href="/minimax">Minimax</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All" Href="/minimax-alphabetapruning">Minimax Alpha Beta Pruning</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All" Href="/mcts">MCTS</MudNavLink>
-    </MudNavGroup>
-    
-    <MudNavGroup Title="Metaheuristic Algorithms">
-        <MudNavLink Match="NavLinkMatch.All">Genetic Algorithms</MudNavLink>
-    </MudNavGroup>
-    
-    <MudNavGroup Title="Probabilistic Reasoning"> 
-        <MudNavLink Match="NavLinkMatch.All">Bayesian Modelling</MudNavLink>
-    </MudNavGroup>
-</MudNavMenu>
+﻿<MudPaper Class="sidebar-paper">
+    <MudNavMenu Class="sidebar-menu">
+        <MudText Class="nav-section-title" >
+            Pathfinding Algorithms
+        </MudText>
+        <MudNavLink Class=".mud-nav-link" Match="NavLinkMatch.All" Href="/algorithms/bfs">BFS</MudNavLink>
+        <MudNavLink Class=".mud-nav-link" Match="NavLinkMatch.All" Href="/algorithms/Astar">A*</MudNavLink>
+        <MudNavLink Class=".mud-nav-link" Match="NavLinkMatch.All" Href="/algorithms/djikstra">Djikstra</MudNavLink>
+        
+        <MudText Class="nav-section-title" >
+            Search Algorithms
+        </MudText>
+        <MudNavLink Class=".mud-nav-link" Match="NavLinkMatch.All" Href="/algorithms/minimax">Minimax</MudNavLink>
+        <MudNavLink Class=".mud-nav-link" Match="NavLinkMatch.All" Href="/algorithms/minimax-alphabetapruning">Minimax Alpha Beta Pruning</MudNavLink>
+        <MudNavLink Class=".mud-nav-link" Match="NavLinkMatch.All" Href="/algorithms/mcts">MCTS</MudNavLink>
+        
+        <MudText Class="nav-section-title">
+            Metaheuristic Algorithms
+        </MudText>
+        <MudNavLink Class=".mud-nav-link" Match="NavLinkMatch.All">Genetic Algorithms</MudNavLink>
+
+        
+        <MudText Class="nav-section-title">
+            Probabilistic Reasoning 
+        </MudText>
+        <MudNavLink Class=".mud-nav-link" Match="NavLinkMatch.All">Bayesian Modelling</MudNavLink>
+
+    </MudNavMenu>
+</MudPaper>

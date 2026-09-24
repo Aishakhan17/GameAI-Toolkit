@@ -1,0 +1,74 @@
+@page "/algorithms/bfs"
+@using System.Collections
+@using System.ComponentModel
+@using System.IO.Pipelines
+@using System.Runtime.InteropServices
+@using GameAIToolkit.Client.Components.UI
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments
+
+<PageTitle>Breadth First Search</PageTitle>
+<div class="vertical-flex">
+    <MudContainer>
+        <h1>Overview</h1>
+        <p class="font-body">Breadth First Search (BFS) is a graph traversal algorithm that starts from a source node and explores the graph level by level. First, it visits all nodes directly adjacent to the source. Then, it moves on to visit the adjacent nodes of those nodes, and this process continues until all reachable nodes are visited.</p>
+        <div class="visual-container">
+            @for (int i = 0; i<numNodes; i++) {
+                int Id = i;
+                int Value = i;
+                bool Visited = false;
+                <TreeNode Id=Id Value=Value Visited=Visited />
+                TreeNode.Node newNode = new()
+                {
+                    Id = Id,
+                    Value = Value,
+                    Visited = Visited,
+                };
+            }
+            <div class="node"></div>
+        </div>
+    </MudContainer>
+</div>
+
+@code {
+    private int numNodes = 6;
+    static List<int> bfs(List<List<int>> adj) {
+        //get the number of nodes 
+        int numberOfNodes = adj.Count;
+        //initialize an array of bools set to false that will be changes to true when the node is visited 
+        bool[] visited = new bool[numberOfNodes];
+        //initialize a queue to implement fifo *@
+        Queue<int> myQueue = new Queue<int>();
+        //initialize a list to hold the nodes in order of traversal 
+        List<int> result = new List<int>();
+
+        //initialize a pointer to traverse the graph
+        int src = 0;
+        visited[src] = true;
+        myQueue.Enqueue(src);
+
+        while (myQueue.Count > 0) {
+            int current = myQueue.Dequeue();
+            result.Add(current);
+
+            foreach (int x in adj[current])
+            {
+                Console.WriteLine($"x {x}");
+                if (!visited[x]) {
+                    visited[x] = true;
+                    myQueue.Enqueue(x);   
+                }
+            }
+        }
+        foreach (int elem in result)
+        {
+            Console.WriteLine($"elem {elem}");
+        }
+        return result;
+    }
+    protected override void OnInitialized()
+    {
+        List<List<int>> adj = [[1, 2], [0, 2], [0, 1, 3, 4], [2], [2]];
+        bfs(adj);
+    }
+}
