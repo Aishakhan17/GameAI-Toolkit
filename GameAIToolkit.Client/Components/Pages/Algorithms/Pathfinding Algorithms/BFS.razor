@@ -6,37 +6,104 @@
 @using GameAIToolkit.Client.Components.UI
 @using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 @using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments
+@using MudBlazor.Charts
+
 
 <PageTitle>Breadth First Search</PageTitle>
 <div class="vertical-flex">
     <MudContainer>
-        <h1>Overview</h1>
-        <p class="font-body">Breadth First Search (BFS) is a graph traversal algorithm that starts from a source node and explores the graph level by level. First, it visits all nodes directly adjacent to the source. Then, it moves on to visit the adjacent nodes of those nodes, and this process continues until all reachable nodes are visited.</p>
-        <div class="visual-container">
-            @for (int i = 0; i<numNodes; i++) {
-                int Id = i;
-                int Value = i;
-                bool Visited = false;
-                <TreeNode Id=Id Value=Value Visited=Visited />
-                TreeNode.Node newNode = new()
-                {
-                    Id = Id,
-                    Value = Value,
-                    Visited = Visited,
-                };
-            }
-            <div class="node"></div>
+        <h1 class="font-code text-align-center middle-vertical-align">Overview</h1>
+        <p class="font-body text-align-center middle-vertical-align">Breadth First Search (BFS) is a graph traversal algorithm that starts from a source node and explores the graph level by level. First, it visits all nodes directly adjacent to the source. Then, it moves on to visit the adjacent nodes of those nodes, and this process continues until all reachable nodes are visited.</p>
+        <h2 class="mt-10 text-align-center middle-vertical-align">Undirected Graph</h2>
+        <div class="visual-container mt-10 diagram-box-background">
+            <MudGrid class="p-20">
+                <MudItem sm="9" xs="12">
+                    <div>
+                    @for (int i = 0; i<numNodes; i++) {
+                        int Id = i;
+                        bool Visited = false;
+                        <TreeNode Id=Id Visited=Visited />
+                        TreeNode.Node newNode = new()
+                        {
+                            Id = Id,
+                            Visited = Visited,
+                        };
+                    }
+                    </div>
+                    <label><strong>You can change the input here</strong></label>
+                    <div>
+                        <textarea @bind="RawInput" rows="5" class="textarea font-body"></textarea><br/>
+                    </div>
+                    <MudButton Class="btn-primary" OnClick="UpdateList">Submit</MudButton>
+                </MudItem>
+                <MudItem sm="3" xs="12">
+                    <div>
+                        <div class="font-code text-align-center middle-vertical-align">
+                            Input: 
+                        </div>
+                        <div class="font-code font-code text-align-center middle-vertical-align">[[@string.Join("],[", Adj.Select(row => String.Join(",", row)))]]</div>
+                    </div>
+                    <div>
+                        <div class="font-code text-align-center middle-vertical-align">
+                            Visited
+                        </div>
+                        <div class="cells" style="--cell-count: @numNodes">
+                            @for (int i = 0; i < numNodes; i++)
+                            {
+                                    <Cell />   
+                            }
+                        </div>
+                    </div>
+                    <div>
+                        <div class="font-code text-align-center middle-vertical-align">
+                            Queue
+                        </div>
+                            <div class="cells" style="--cell-count: @numNodes">
+                                @for (int i = 0; i < numNodes; i++)
+                                {
+                                    <Cell />
+                                }
+                        </div>
+                    </div>
+                </MudItem>
+            </MudGrid>
         </div>
+        <h2 class="mt-10 text-align-center middle-vertical-align">Binary Tree</h2>
     </MudContainer>
 </div>
 
 @code {
-    private int numNodes = 6;
-    static List<int> bfs(List<List<int>> adj) {
-        //get the number of nodes 
-        int numberOfNodes = adj.Count;
+    private string RawInput {get;set;} = 
+    "0:1,2\n1:2,3\n2:1,4\n3:1,4" ;
+    private List<List<int>> Adj {get; set;} = new() {
+        new() {1, 2}, 
+        new(){0, 2}, 
+        new() {0, 1, 3, 4}, 
+        new(){2}, 
+        new(){2}
+        };
+    private string defaultGraph {get; set;}
+    private int numNodes;
+    protected override void OnInitialized()
+    {
+        defaultGraph = RawInput;
+        numNodes = Adj.Count;
+        bfs(Adj, numNodes);
+        string[] lines = RawInput.Split(new[] {'\n', '\r'}, StringSplitOptions.RemoveEmptyEntries);
+        @* foreach (var line in lines)
+        {
+            Console.WriteLine($"line {line}");
+        } *@
+    }
+    static void UpdateList()
+    {
+        
+    }
+
+    static List<int> bfs(List<List<int>> Adj, int numNodes) {
+        //numNodes = adj.Count;
         //initialize an array of bools set to false that will be changes to true when the node is visited 
-        bool[] visited = new bool[numberOfNodes];
+        bool[] visited = new bool[numNodes];
         //initialize a queue to implement fifo *@
         Queue<int> myQueue = new Queue<int>();
         //initialize a list to hold the nodes in order of traversal 
@@ -51,24 +118,19 @@
             int current = myQueue.Dequeue();
             result.Add(current);
 
-            foreach (int x in adj[current])
+            foreach (int x in Adj[current])
             {
-                Console.WriteLine($"x {x}");
                 if (!visited[x]) {
                     visited[x] = true;
                     myQueue.Enqueue(x);   
                 }
             }
         }
-        foreach (int elem in result)
+        foreach (int i in result)
         {
-            Console.WriteLine($"elem {elem}");
+            Console.WriteLine($"i {i}");
         }
         return result;
     }
-    protected override void OnInitialized()
-    {
-        List<List<int>> adj = [[1, 2], [0, 2], [0, 1, 3, 4], [2], [2]];
-        bfs(adj);
-    }
+    
 }

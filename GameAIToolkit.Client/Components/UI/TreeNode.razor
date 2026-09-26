@@ -1,3 +1,4 @@
+@using System.Diagnostics
 @using System.Diagnostics.CodeAnalysis
 @using System.Runtime.CompilerServices
 @using MudBlazor.State
@@ -17,13 +18,17 @@
 
     public class Node
     {
-        public required int Id { get; set; }
-        public required int Value { get; set; }
+        //public required string Id { get; set; } = String.Empty; 
+        public required int Id {get;set;}
+        //Visual Coordinates of each Node
+        public double X {get; set;}
+        public double Y {get; set;}
+
+        //Vector Force Fields 
+        public double Fx {get; set;}
+        public double Fy {get; set;}
+
         public required bool Visited { get; set; }
 
-        public void displayValues(int Id, int Value, bool Visited)
-        {
-            Console.WriteLine($"id {this.Id}, Value {this.Value}, Visited {this.Visited}");
-        }
     }
 }

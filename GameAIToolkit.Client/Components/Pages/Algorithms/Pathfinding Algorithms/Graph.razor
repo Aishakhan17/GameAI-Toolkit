@@ -1,0 +1,261 @@
+@page "/graph"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+<div class="graph-wrapper" style="font-family: sans-serif; padding: 20px;">
+    <h3>Dynamic Blazor Graph Layout</h3>
+    
+    <!-- User Input Area for Adjacency List -->
+    <div style="margin-bottom: 20px;">
+        <label><strong>Enter Adjacency List (Node: Neighbor,Neighbor):</strong></label><br />
+        <textarea @bind="RawInput" rows="5" style="width: 100%; max-width: 600px; font-family: monospace; padding: 8px;"></textarea><br />
+        <button @onclick="GenerateGraph" style="margin-top: 8px; padding: 6px 12px; cursor: pointer; background: #4CAF50; color: white; border: none; border-radius: 4px;">
+            Generate Layout
+        </button>
+        <button @onclick="ResetGraph" style="margin-top: 8px; padding: 6px 12px; cursor: pointer; background: #4CAF50; color: white; border: none; border-radius: 4px;">
+            Reset
+        </button>
+    </div>
+
+    <!-- SVG Graph Canvas -->
+    <div style="position: relative; width: @(Width)px; height: @(Height)px; border: 1px solid #ddd; background: #fafafa; border-radius: 8px; overflow: hidden;">
+        <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;">
+            <!-- Render Edges -->
+            @foreach (var edge in Edges)
+            {
+                if (Nodes.TryGetValue(edge.Source, out var s) && Nodes.TryGetValue(edge.Target, out var t))
+                {
+                    <line x1="@s.X" y1="@s.Y" x2="@t.X" y2="@t.Y" stroke="#bbb" stroke-width="1.5" />
+                }
+            }
+
+            <!-- Render Nodes -->
+            @foreach (var kvp in Nodes)
+            {
+                var node = kvp.Value;
+                <g>
+                    <!-- Node Circle (Match the image style) -->
+                    <circle cx="@node.X" cy="@node.Y" r="12" fill="#80cbc4" stroke="#4db6ac" stroke-width="2" />
+                    <!-- Node Label inside/beside -->
+                    <text x="@node.X" y="@(node.Y + 25)" font-size="12" font-weight="bold" text-anchor="middle" fill="#000">
+                        @node.Id
+                    </text>
+                </g>
+            }
+        </svg>
+    </div>
+</div>
+
+@code {
+    // Canvas dimensions
+    private double Width = 800;
+    private double Height = 450;
+
+    // State collections
+    private Dictionary<string, Node> Nodes = new();
+    private List<Edge> Edges = new();
+
+    // Default sample graph reflecting a mesh network structure
+    private string RawInput { get; set; } = 
+        "1: 2,3,4\n2: 1,7\n3: 1,2,6,5\n4: 1,3,5,8\n5: 3,4,6,10,9\n6: 3,7,11,10,5\n7: 2,11,6\n8: 4,9\n9: 8,5,15,16\n10: 6,5,11,12,15\n11: 7,6,10,12,13\n12: 11,10,13,15\n13: 11,12,14\n14: 13,12,15,16\n15: 10,12,14,16,9\n16: 9,15,14";
+
+    private string defaultGraph {get;set;}
+    protected override void OnInitialized()
+    {
+        GenerateGraph();
+        defaultGraph = RawInput;
+    }
+
+    private void ResetGraph()
+    {
+        RawInput = defaultGraph;
+        GenerateGraph();
+    }
+    private void GenerateGraph()
+    {
+        ParseAdjacencyList();
+        RunForceDirectedLayout();
+    }
+
+    private void ParseAdjacencyList()
+    {
+        Console.WriteLine("parsing list");
+        Nodes.Clear();
+        Edges.Clear();
+
+        var lines = RawInput.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+        var random = new Random(42); // Seeded for a baseline initialization constraint
+
+        // 1. First Pass: Create Nodes with clustered initial locations
+        foreach (var line in lines)
+        {
+            var parts = line.Split(':');
+            foreach (var part in parts)
+            {
+                Console.WriteLine($"parts from first pass {part}");            
+            }
+            if (parts.Length < 1) continue;
+
+            string sourceId = parts[0].Trim();
+            Console.WriteLine($"SourceId {sourceId}");
+            if (!Nodes.ContainsKey(sourceId))
+            {
+                Nodes[sourceId] = new Node 
+                { 
+                    Id = sourceId, 
+                    X = (Width / 2) + (random.NextDouble() - 0.5) * 40,
+                    Y = (Height / 2) + (random.NextDouble() - 0.5) * 40
+                };
+            }
+        }
+
+        foreach (var node in Nodes)
+        {
+            Console.WriteLine($"node {node}");
+        }
+
+        // 2. Second Pass: Create Unique Undirected Edges
+        var edgeTracker = new HashSet<string>();
+        foreach (var line in lines)
+        {
+            var parts = line.Split(':');
+            foreach (var part in parts)
+            {
+                Console.WriteLine($"parts from second pass {part}");            
+            }
+            if (parts.Length < 2) continue;
+
+            string sourceId = parts[0].Trim();
+            Console.WriteLine($"sourceId from second pass {sourceId}");
+            var targets = parts[1].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var target in targets)
+            {
+                Console.WriteLine($"target {target}");
+
+                string targetId = target.Trim();
+                Console.WriteLine($"targetId: {targetId}");
+                // Track nodes that might only exist on the right side of the list
+                if (!Nodes.ContainsKey(targetId))
+                {
+                    Nodes[targetId] = new Node { Id = targetId, X = Width / 2, Y = Height / 2 };
+                }
+
+                // Prevent duplicate bidirectional edges in rendering collection
+                var edgeKey = string.Compare(sourceId, targetId) < 0 ? $"{sourceId}-{targetId}" : $"{targetId}-{sourceId}";
+                Console.WriteLine($"edgeKey {edgeKey} sourceId {sourceId} targetId {targetId}");
+                //if (!edgeTracker.Contains(edgeKey))
+                //{ 
+                edgeTracker.Add(edgeKey);
+                Edges.Add(new Edge { Source = sourceId, Target = targetId });
+                //} *@
+            }
+        }
+        foreach (var edge in edgeTracker)
+        {
+            Console.WriteLine($"edge from tracker{edge}");
+        }
+    }
+
+    private void RunForceDirectedLayout()
+    {
+        if (Nodes.Count == 0) return;
+
+        int iterations = 250;
+        // Ideal distance between interconnected mesh components
+        double k = Math.Sqrt((Width * Height) / Nodes.Count) * 0.75; 
+        double temperature = Width / 10.0; // Simulated annealing cooling factor
+        double coolingFactor = temperature / iterations;
+
+        for (int iter = 0; iter < iterations; iter++)
+        {
+            // Reset force accumulations on every pass
+            foreach (var node in Nodes.Values)
+            {
+                node.Fx = 0;
+                node.Fy = 0;
+            }
+
+            // Force Part 1: Electrostatic Repulsion (All node-pairs push apart)
+            var nodeList = Nodes.Values.ToList();
+            for (int i = 0; i < nodeList.Count; i++)
+            {
+                for (int j = i + 1; j < nodeList.Count; j++)
+                {
+                    var u = nodeList[i];
+                    var v = nodeList[j];
+
+                    double dx = v.X - u.X;
+                    double dy = v.Y - u.Y;
+                    double distance = Math.Sqrt(dx * dx + dy * dy);
+                    if (distance < 0.1) distance = 0.1; // Safeguard division by zero
+
+                    // Repulsion formula
+                    double repulsionForce = (k * k) / distance;
+                    double fx = (dx / distance) * repulsionForce;
+                    double fy = (dy / distance) * repulsionForce;
+
+                    u.Fx -= fx; u.Fy -= fy;
+                    v.Fx += fx; v.Fy += fy;
+                }
+            }
+
+            // Force Part 2: Hooke's Law Spring Attraction (Connected paths pull together)
+            foreach (var edge in Edges)
+            {
+                var u = Nodes[edge.Source];
+                var v = Nodes[edge.Target];
+
+                double dx = v.X - u.X;
+                double dy = v.Y - u.Y;
+                double distance = Math.Sqrt(dx * dx + dy * dy);
+                if (distance < 0.1) distance = 0.1;
+
+                // Attraction formula
+                double attractionForce = (distance * distance) / k;
+                double fx = (dx / distance) * attractionForce;
+                double fy = (dy / distance) * attractionForce;
+
+                u.Fx += fx; u.Fy += fy;
+                v.Fx -= fx; v.Fy -= fy;
+            }
+
+            // Force Part 3: Commit and Constrain within Box bounds
+            foreach (var node in Nodes.Values)
+            {
+                double forceMag = Math.Sqrt(node.Fx * node.Fx + node.Fy * node.Fy);
+                if (forceMag < 0.1) continue;
+
+                // Limit movement step size to the current layout "temperature"
+                double step = Math.Min(forceMag, temperature);
+                node.X += (node.Fx / forceMag) * step;
+                node.Y += (node.Fy / forceMag) * step;
+
+                // Enforce safety boundary margins
+                node.X = Math.Max(25, Math.Min(Width - 25, node.X));
+                node.Y = Math.Max(25, Math.Min(Height - 25, node.Y));
+            }
+
+            // Cool down system state for equilibrium convergence
+            temperature -= coolingFactor;
+            if (temperature <= 0) break;
+        }
+    }
+
+    // Helper Classes inside code block
+    public class Node
+    {
+        public string Id { get; set; } = string.Empty;
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Fx { get; set; }
+        public double Fy { get; set; }
+    }
+
+    public class Edge
+    {
+        public string Source { get; set; } = string.Empty;
+        public string Target { get; set; } = string.Empty;
+    }
+}
