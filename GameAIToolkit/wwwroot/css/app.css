@@ -183,10 +183,11 @@ h1:focus {
 
 /* ============================================Visualizations====================================================*/
 .visual-container {
+	position: relative;
 	height: 100%;
 	width: 100%;
-	border: black;
-	border-width: 10px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
 }
 
 .node {
@@ -196,19 +197,69 @@ h1:focus {
 	background-color: #006bb7;
 }
 
+.textarea {
+	width: 100%;
+	padding: 8px;
+}
+
+.diagram-box-background {
+	background: #fafafa;
+}
+
+.cell {
+	width: 100%;
+	height: 100%;
+	border: solid 0.1rem black;
+}
 /* ==============================================================================================================*/
 
 /* ============================================Content Styling====================================================*/
 
-.vertical-flex {
+.row {
 	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
 	align-items: center;
+	width: 100%;
+	min-width: 0;
+}
+.cells {
+	display: grid;
+	grid-template-columns: repeat(var(--cell-count), 1fr);
+	width: 100%;
+	min-width: 0;
+	margin-bottom: 20px;
+}
+
+.cell {
+	aspect-ratio: 1/1;
+	border: 1px solid #333;
+	box-sizing: border-box;
+}
+.cell:not(:first-child) {
+	margin-left: -1px; /* collapse double borders */
+}
+.cell + .cell {
+	margin-left: -1px;
+}
+
+.p-20 {
+	padding: 20px;
+}
+.horizontal-flex {
+	display: flex;
+}
+.mt-10 {
+	margin-top: 10%;
 }
 
 /* ============================================Text Styling====================================================*/
 .text-white {
 	color: #fff;
+}
+.text-align-center {
+	text-align: center;
+}
+
+.middle-vertical-align {
+	vertical-align: middle;
 }
 /* ==============================================================================================================*/
