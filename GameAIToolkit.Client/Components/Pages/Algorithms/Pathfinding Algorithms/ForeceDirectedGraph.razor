@@ -1,7 +1,8 @@
 @page "/graph"
-using System;
-using System.Collections.Generic;
-using System.Linq;
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@rendermode InteractiveAuto
 
 <div class="graph-wrapper" style="font-family: sans-serif; padding: 20px;">
     <h3>Dynamic Blazor Graph Layout</h3>
@@ -76,11 +77,19 @@ using System.Linq;
     {
         ParseAdjacencyList();
         RunForceDirectedLayout();
+        foreach (var node in Nodes)
+        {
+            Console.WriteLine($"node from graph {node}");
+        }
+        foreach (var edge in Edges)
+        {
+            Console.WriteLine($"edge from graph {edge}");
+        }
     }
 
     private void ParseAdjacencyList()
     {
-        Console.WriteLine("parsing list");
+        @* Console.WriteLine("parsing list"); *@
         Nodes.Clear();
         Edges.Clear();
 
@@ -91,14 +100,13 @@ using System.Linq;
         foreach (var line in lines)
         {
             var parts = line.Split(':');
-            foreach (var part in parts)
+            @* foreach (var part in parts)
             {
-                Console.WriteLine($"parts from first pass {part}");            
-            }
+                Console.WriteLine($"parts from first pass {part} length {part.Length}");            
+            } *@
             if (parts.Length < 1) continue;
 
             string sourceId = parts[0].Trim();
-            Console.WriteLine($"SourceId {sourceId}");
             if (!Nodes.ContainsKey(sourceId))
             {
                 Nodes[sourceId] = new Node 
@@ -110,51 +118,36 @@ using System.Linq;
             }
         }
 
-        foreach (var node in Nodes)
-        {
-            Console.WriteLine($"node {node}");
-        }
-
         // 2. Second Pass: Create Unique Undirected Edges
         var edgeTracker = new HashSet<string>();
         foreach (var line in lines)
         {
             var parts = line.Split(':');
-            foreach (var part in parts)
-            {
-                Console.WriteLine($"parts from second pass {part}");            
-            }
             if (parts.Length < 2) continue;
 
             string sourceId = parts[0].Trim();
-            Console.WriteLine($"sourceId from second pass {sourceId}");
             var targets = parts[1].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var target in targets)
             {
-                Console.WriteLine($"target {target}");
-
                 string targetId = target.Trim();
-                Console.WriteLine($"targetId: {targetId}");
                 // Track nodes that might only exist on the right side of the list
+                @* Console.WriteLine($"targetId {targetId}"); *@
                 if (!Nodes.ContainsKey(targetId))
                 {
+                    @* Console.WriteLine($"target not in Nodes {targetId}"); *@
                     Nodes[targetId] = new Node { Id = targetId, X = Width / 2, Y = Height / 2 };
                 }
 
                 // Prevent duplicate bidirectional edges in rendering collection
                 var edgeKey = string.Compare(sourceId, targetId) < 0 ? $"{sourceId}-{targetId}" : $"{targetId}-{sourceId}";
-                Console.WriteLine($"edgeKey {edgeKey} sourceId {sourceId} targetId {targetId}");
-                //if (!edgeTracker.Contains(edgeKey))
-                //{ 
-                edgeTracker.Add(edgeKey);
-                Edges.Add(new Edge { Source = sourceId, Target = targetId });
-                //} *@
+                if (!edgeTracker.Contains(edgeKey))
+                {   
+                    @* Console.WriteLine($"Edge key from fdg {edgeKey}"); *@
+                    edgeTracker.Add(edgeKey);
+                    Edges.Add(new Edge { Source = sourceId, Target = targetId });
+                } 
             }
-        }
-        foreach (var edge in edgeTracker)
-        {
-            Console.WriteLine($"edge from tracker{edge}");
         }
     }
 
@@ -186,18 +179,20 @@ using System.Linq;
                     var u = nodeList[i];
                     var v = nodeList[j];
 
+                    //v.pos -u.pos
                     double dx = v.X - u.X;
                     double dy = v.Y - u.Y;
+                    
                     double distance = Math.Sqrt(dx * dx + dy * dy);
                     if (distance < 0.1) distance = 0.1; // Safeguard division by zero
 
                     // Repulsion formula
-                    double repulsionForce = (k * k) / distance;
-                    double fx = (dx / distance) * repulsionForce;
+                    double repulsionForce = -(k * k) / distance; //repulsion force for a particular distance
+                    double fx = (dx / distance) * repulsionForce; //this is change is pos /_\ divided by |/_\| as shown in the original paper
                     double fy = (dy / distance) * repulsionForce;
 
-                    u.Fx -= fx; u.Fy -= fy;
-                    v.Fx += fx; v.Fy += fy;
+                    u.Fx += fx; u.Fy += fy; //both the nodes are pushed away here. It is possible to invert the signs here and remove the -ve sign in line 198
+                    v.Fx -= fx; v.Fy -= fy;
                 }
             }
 
@@ -217,7 +212,7 @@ using System.Linq;
                 double fx = (dx / distance) * attractionForce;
                 double fy = (dy / distance) * attractionForce;
 
-                u.Fx += fx; u.Fy += fy;
+                u.Fx += fx; u.Fy += fy; //both the nodes are being pulled together here. Newton's third law being applicable here?
                 v.Fx -= fx; v.Fy -= fy;
             }
 

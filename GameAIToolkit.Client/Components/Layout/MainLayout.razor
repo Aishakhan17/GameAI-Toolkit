@@ -14,18 +14,19 @@
         <MudSwitch @bind-Value="_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode" />
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/Aishakhan17?tab=repositories" Target="_blank" />
     </MudAppBar>
-    <MudMainContent Class="pt-16 px-16 mt-10">
+    <div class="main-body">
             @Body
-    </MudMainContent>
+    </div>
 </MudLayout>
 
 @code{
-    @* private bool _open = false; *@
     private bool _isDarkMode = false;
-    @* private void ToggleDrawer()
+    private bool _isBrowser;
+    protected override void OnInitialized()
     {
-        _open = !_open;
-    } *@
+        _isBrowser = OperatingSystem.IsBrowser();
+        Console.WriteLine($"_isBrowser {_isBrowser}");
+    }
 
 
 }

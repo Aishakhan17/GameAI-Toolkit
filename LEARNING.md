@@ -23,11 +23,15 @@ List vs Arrays: Arrays are fixed size while Lists can grow dynamically.
 Adjacency lists? Not C# specific but came across this term. Basically just a graph representation with vertices(nodes) and edges(lines connecting these nodes) using List<T>. There are other ways to implement a graph but out of the scope of BFS implementation as of now. Look into Hashsets if there's time and see if they could be better for this use case? So far unsure as this BFS uses sequential integer data but what if data was different? Anyway, in the case of an undirected graph represented using List<T> the number of unique nodes is basically the number of nested rows/list in the data structure and not the total number of elements.
 
 **Syntax specific**
-Classes nested inside a component's code block need to be instantiated manually.
-Inheritance
+Classes nested inside a component's code block need to be instantiated manually (obv?).
+**Inheritance**
 So far, I have used direct instantiation by the parent component in the case of where there's a relationship. Otherwise, it can be instantiated in the on parameters set call where the child can build its own class.
 **General**
 Still getting the hang of syntax, language is more verbose but have made some progress. Have tried minimizing use of AI - trying to read through stackoverflow and blogs like the good old days.
+
+The render mode has been set to interactive auto, however there are some problems with interactivity when the app loads.dark mode toggle has a lag, menu options, buttons all have a lag. Probably because server side rendering while wasm and application are downloaded and cached in the browser? It becomes responsive after a few seconds. interactive client won't speed it up and interactive server won't do much either? This should not be happening.
+
+Lazy Loading will break dependency injection because you can't add services after the root provider has been built, which happens long before the dlls are ever loaded - https://blogs.u2u.be/peter/post/blazor-lazy-loading-and-dependency-injection?utm_source=dlvr.it&utm_medium=twitter
 
 ## Bibliography
 
@@ -40,6 +44,7 @@ List<T>: https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic
 Force Directed Graph Drawing: https://en.wikipedia.org/wiki/Force-directed_graph_drawing
 https://www.yworks.com/pages/force-directed-graph-layout#examples
 https://cs.brown.edu/people/rtamassi/gdhandbook/chapters/force-directed.pdf
+https://www.reingold.co/force-directed.pdf
 px, rem and em: https://www.joshwcomeau.com/css/surprising-truth-about-pixels-and-accessibility/
 
 Personal Notes: Force Directed Graph Drawing
