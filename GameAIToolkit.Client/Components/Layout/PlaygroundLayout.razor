@@ -1,0 +1,43 @@
+@inherits LayoutComponentBase
+@layout MainLayout
+<div class="playground-shell">
+    <NavMenu topics="@topics"/>
+    <div class="playground-content">
+        @Body
+    </div>
+</div>
+
+
+@code {
+    public Dictionary<string, Dictionary<string, string>> topics {get; set;}
+        protected override void OnInitialized()
+    {
+        initializeTopicList();
+    }
+    private void initializeTopicList()
+    {
+        topics = new();
+        topics.Add("Data Structures", new Dictionary<string, string>());
+        topics["Data Structures"].Add("Array List",  "/algorithms/data-structures/array-list");
+        topics["Data Structures"].Add("Linked Lists", "/algorithms/data-structures/linked-list");
+        topics["Data Structures"].Add("Doubly Linked Lists", "/algorithms/data-structures/doubly-linked-list");
+        topics["Data Structures"].Add("Circular Linked Lists" , "/algorithms/data-structures/circular-linked-list");
+        topics["Data Structures"].Add("Heap", "/algorithms/data-structures/heap");
+        topics["Data Structures"].Add("Stack", "/algorithms/data-structures/stack");
+        topics["Data Structures"].Add("Queue","/algorithms/data-structures/queue");
+
+        topics.Add("Search Algorithms", new Dictionary<string, string>());
+        topics["Search Algorithms"].Add("Monte Carlo Tree Search", "/algorithms/search-algorithms/mcts");
+        topics["Search Algorithms"].Add("Minimax", "/algorithms/search-algorithms/minimax");
+
+        topics.Add("Pathfinding Algorithms", new Dictionary<string, string>());
+        topics["Pathfinding Algorithms"].Add("A start Search", "/algorithms/pathfinding-algorithms/astar");
+        topics["Pathfinding Algorithms"].Add("Breadth First Search", "/algorithms/pathfinding-algorithms/bfs");
+        topics["Pathfinding Algorithms"].Add("Depth First Search", "/algorithms/pathfinding-algorithms/dfs");
+        topics["Pathfinding Algorithms"].Add("Djikstra's Algorithm", "/algorithms/pathfinding-algorithms/djikstra");
+        topics.Add("Optimization Algorithms", new Dictionary<string, string>());
+        topics["Optimization Algorithms"].Add("Simmulated Annealing", "/algorithms/optimization-algorithms/simmulated-annealing");
+        topics.Add("Graph Drawing Algorithms", new Dictionary<string, string>());
+        topics["Graph Drawing Algorithms"].Add("Force Directed Graphs", "/algorithms/graph-drawing-algorithms/force-directed-graph"); 
+    }
+}

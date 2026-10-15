@@ -1,17 +1,16 @@
 @page "/algorithms/pathfinding-algorithms/bfs"
-@using GameAIToolkit.Client.Components.UI
-
+@using GameAIToolkit.Client.Components.UI.Graphs
+@layout PlaygroundLayout
 
 <PageTitle>Breadth First Search</PageTitle>
-<div>
-    <div>
+<div class="playground-body">
+    <div class="topic-intro">
         <h1 class="font-code text-align-center middle-vertical-align">Overview</h1>
         <p class="font-body text-align-center middle-vertical-align">Breadth First Search (BFS) is a graph traversal algorithm that starts from a source node and explores the graph level by level. First, it visits all nodes directly adjacent to the source. Then, it moves on to visit the adjacent nodes of those nodes, and this process continues until all reachable nodes are visited.</p>
         <h2 class="mt-10 text-align-center middle-vertical-align">Undirected Graph</h2>
         <div class="mt-10">
             <ForceDirectedGraph />
         </div>
-        <h2 class="mt-10 text-align-center middle-vertical-align">Binary Tree</h2>
     </div>
 </div>
 

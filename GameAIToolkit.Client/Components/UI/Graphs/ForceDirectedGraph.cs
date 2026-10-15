@@ -4,7 +4,7 @@ public partial class ForceDirectedGraph
 {
 
 
-    private Dictionary<string, TreeNode.Node> Nodes = new();
+    private Dictionary<string, Node> Nodes = new();
     private List<TreeEdge.Edge> Edges = new();
     private bool ParseInput()
     {
@@ -21,18 +21,9 @@ public partial class ForceDirectedGraph
     }
     private void CreateNodesAndEdges(string[] lines, Random random)
     {
-        // @* Console.WriteLine($"Parsing"); *@
         CreateNodes(lines, random);
         CreateEdges(lines, random);
         RunForceDirectedGraphLayout();
-        foreach (var node in Nodes)
-        {
-            Console.WriteLine($"node id {node.Value.Id} node value X {node.Value.X} node value Y {node.Value.Y}");
-        }
-        foreach (var edge in Edges)
-        {
-            Console.WriteLine($"edge source {edge.Source} edge target {edge.Target}");
-        }
     }
     private void CreateNodes(string[] lines, Random random)
     {
@@ -41,10 +32,9 @@ public partial class ForceDirectedGraph
             var parts = line.Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             if (parts.Length <1) continue;
             string sourceId = parts[0];
-            // @* Console.WriteLine($"sourceId {sourceId}"); *@
             if (!Nodes.ContainsKey(sourceId))
             {
-                var newNode = new TreeNode.Node
+                var newNode = new Node
                 {
                     Id  = sourceId,
                     X = (Width/2) + (random.NextDouble() + 0.5)*40,
@@ -69,7 +59,7 @@ public partial class ForceDirectedGraph
             {
                 var targetId = target;
                 if (!Nodes.ContainsKey(targetId)) {
-                    var newNode = new TreeNode.Node
+                    var newNode = new Node
                     {
                         Id = targetId,
                         X = (Width/2)+(random.NextDouble() + 0.5)*40,
@@ -80,7 +70,6 @@ public partial class ForceDirectedGraph
                 var edgeKey = string.Compare(sourceId, targetId) < 0 ? $"{sourceId}-{targetId}":$"{targetId}-{sourceId}";
                 if (edgeTracker.Add(edgeKey))
                 {
-                    // @* Console.WriteLine($"edgeKey {edgeKey}"); *@
                     var newEdge = new TreeEdge.Edge
                     {
                         Source = sourceId,

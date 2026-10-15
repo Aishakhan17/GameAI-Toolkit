@@ -1,9 +1,10 @@
 @using GameAIToolkit.Client.Components.Pages.Implementation
 @using GameAIToolkit.Client.Components.UI.Graphs
 @rendermode InteractiveWebAssembly
+@layout PlaygroundLayout
 
 <div>
-    <div class="playround-body">
+    <div class="playground-body">
         <div style="position: relative; width: @(Width)px; height: @(Height)px; border: 1px solid #ddd; background: #fafafa; border-radius: 8px; overflow: hidden;">
             <svg style="position: absolute; width: 100%; height: 100%; top: 0; padding: 2px">
                 @foreach (var edge in Edges)
@@ -16,48 +17,24 @@
                 @foreach (var kvp in Nodes)
                 {
                     var node = kvp.Value;
-                    @* <g>
-                        <circle cx="@node.X" cy="@node.Y" r="12" fill="#80cbc4" stroke = "bbb" stroke-width="2"/>
-                        <text x="@node.X" y="@node.Y" font-size="12" font-weight ="bold" text-anchor="middle" fill="000">
-                            @node.Id
-                        </text>
-                    </g> *@
-                    <TreeNode />
+                    <TreeNode @key="node.Id" X="@node.X" Y="@node.Y" radius="12" Id="@node.Id"/>
                 }
             </svg>
         </div>
-        <div class="sidebar-right diagram-box-background">
-            <label><strong>Input</strong></label>
-            <div>
-                <textarea @bind="rawInput" rows="5" class="textarea font-body" disabled="@(!RendererInfo.IsInteractive)"></textarea><br/>
+        <div class="right-rail">
+            <div class="code-box">
+                This is where the code goes
             </div>
-            <MudButton Class="btn-primary" OnClick="UpdateList">Submit</MudButton>
-            <MudButton Class="btn-secondary" OnClick="ResetList">Reset</MudButton>
-        </div>
-    </div>
-    <div sm="3" xs="12">
-        <div>
-            <div>
-                <div class="font-code text-align-center middle-vertical-align">
-                    Visited
+            <div class="input-box">
+                <label><strong>Input</strong></label>
+                <div>
+                    <textarea @bind="rawInput" rows="5" class="textarea font-body" disabled="@(!RendererInfo.IsInteractive)"></textarea><br/>
                 </div>
-                <div class="cells" style="--cell-count: @numNodes">
-                    @for (int i = 0; i < numNodes; i++)
-                    {
-                            <Cell />   
-                    }
-                </div>
+                <MudButton Class="btn-primary" OnClick="UpdateList">Submit</MudButton>
+                <MudButton Class="btn-secondary" OnClick="ResetList">Reset</MudButton>
             </div>
-            <div>
-                <div class="font-code text-align-center middle-vertical-align">
-                    Queue
-                </div>
-                    <div class="cells" style="--cell-count: @numNodes">
-                        @for (int i = 0; i < numNodes; i++)
-                        {
-                            <Cell />
-                        }
-                </div>
+            <div class="logger">
+                This is where the logger goes
             </div>
         </div>
     </div>
@@ -94,43 +71,4 @@
         rawInput = defaultInput;
         ParseInput();
     }
-    
-
-
-
-    static List<int> bfs(List<List<int>> input, int numNodes) 
-        {
-        //numNodes = adj.Count;
-        //initialize an array of bools set to false that will be changes to true when the node is visited 
-        bool[] visited = new bool[numNodes];
-        //initialize a queue to implement fifo *@
-        Queue<int> myQueue = new Queue<int>();
-        //initialize a list to hold the nodes in order of traversal 
-        List<int> result = new List<int>();
-
-        //initialize a pointer to traverse the input
-        int src = 0;
-        visited[src] = true;
-        myQueue.Enqueue(src);
-
-        while (myQueue.Count > 0) {
-            int current = myQueue.Dequeue();
-            Console.WriteLine($"current {current}");
-            result.Add(current);
-
-            @* foreach (x in input[current])
-            {
-                if (!visited[x]) {
-                    visited[x] = true;
-                    myQueue.Enqueue(x);   
-                }
-            } *@
-        }
-        foreach (int i in result)
-        {
-            Console.WriteLine($"i {i}");
-        }
-        return result;
-    }
-    
 }

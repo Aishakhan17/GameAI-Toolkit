@@ -1,0 +1,29 @@
+@using System.Diagnostics
+@using System.Diagnostics.CodeAnalysis
+@using GameAIToolkit.Client.Components.UI.Graphs
+@using System.Runtime.CompilerServices
+
+
+<g>
+    <circle cx="@X" cy="@Y" r="@radius" fill="#80cbc4" stroke = "bbb" stroke-width="2"/>
+    <text x="@X" y="@Y" font-size="12" font-weight ="bold" text-anchor="middle" fill="000">
+        @Id
+    </text>
+</g>
+
+@code {
+    [Parameter]        
+    public required string Id {get; set;} = "";
+ 
+    [Parameter]        
+    public required double X {get; set;}
+
+    [Parameter]        
+    public required double Y {get; set;}
+    [Parameter]
+    public required double radius {get; set;}
+@*  
+    [Parameter]        
+    public bool Visited {get; set;} *@
+
+}
