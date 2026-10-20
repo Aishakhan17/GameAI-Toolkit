@@ -1,12 +1,11 @@
-@using GameAIToolkit.Client.Components.Pages.Implementation
-@using GameAIToolkit.Client.Components.UI.Graphs
+@using GameAIToolkit.Client.Components.UI.Graphs;
 @rendermode InteractiveWebAssembly
 @layout PlaygroundLayout
 
-<div>
-    <div class="playground-body">
-        <div style="position: relative; width: @(Width)px; height: @(Height)px; border: 1px solid #ddd; background: #fafafa; border-radius: 8px; overflow: hidden;">
-            <svg style="position: absolute; width: 100%; height: 100%; top: 0; padding: 2px">
+<div class="playground-body">
+    <section class="panel playground-widget">
+        <div class="graph-canvas">
+            <svg class="graph-svg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet">
                 @foreach (var edge in Edges)
                 {
                     if (Nodes.TryGetValue(edge.Source, out var s) && Nodes.TryGetValue(edge.Target, out var t))
@@ -17,27 +16,37 @@
                 @foreach (var kvp in Nodes)
                 {
                     var node = kvp.Value;
-                    <TreeNode @key="node.Id" X="@node.X" Y="@node.Y" radius="12" Id="@node.Id"/>
+                    <TreeNode @key="node.Id" X="@node.X" Y="@node.Y" radius="12" Id="@node.Id" />
                 }
             </svg>
         </div>
-        <div class="right-rail">
-            <div class="code-box">
-                This is where the code goes
+        <footer class="player">Player goes here</footer>
+    </section>
+
+    <aside class="right-rail">
+        <CodeWidget />
+
+        <section class="panel panel--inputs">
+            <header class="panel__header">
+                <span class="panel__title">Input</span>
+            </header>
+            <div class="panel__body">
+                <textarea @bind="rawInput" rows="5" class="textarea"
+                          disabled="@(!RendererInfo.IsInteractive)"></textarea>
             </div>
-            <div class="input-box">
-                <label><strong>Input</strong></label>
-                <div>
-                    <textarea @bind="rawInput" rows="5" class="textarea font-body" disabled="@(!RendererInfo.IsInteractive)"></textarea><br/>
-                </div>
-                <MudButton Class="btn-primary" OnClick="UpdateList">Submit</MudButton>
-                <MudButton Class="btn-secondary" OnClick="ResetList">Reset</MudButton>
-            </div>
-            <div class="logger">
-                This is where the logger goes
-            </div>
-        </div>
-    </div>
+            <footer class="panel__footer">
+                <button class="btn btn-primary" @onclick="UpdateList">Submit</button>
+                <button class="btn btn-secondary" @onclick="ResetList">Reset</button>
+            </footer>
+        </section>
+
+        <section class="panel panel--log">
+            <header class="panel__header">
+                <span class="panel__title">Log</span>
+            </header>
+            <div class="panel__body">This is where the logger goes</div>
+        </section>
+    </aside>
 </div>
 
 @code {
@@ -59,6 +68,7 @@
     }
     private void UpdateList()
     {
+        Console.WriteLine("updating");
         ParseInput();
                 @* if (parsedSuccessfully)
         {
@@ -68,6 +78,7 @@
     }
     private void ResetList()
     {
+        Console.WriteLine("resetting");
         rawInput = defaultInput;
         ParseInput();
     }

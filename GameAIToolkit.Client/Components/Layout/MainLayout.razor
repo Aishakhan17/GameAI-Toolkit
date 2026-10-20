@@ -1,32 +1,53 @@
-﻿@inherits LayoutComponentBase;
+﻿
+@inherits LayoutComponentBase
 
-<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="@CustomThemes.CustomTheme.Spacelabtheme"/>
-<MudPopoverProvider/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
-<MudLayout>
-    <MudAppBar Elevation="1">
-        <h1 class="font-display">Aisha's Laboratory</h1>
-        <MudSpacer />
-        <MudButton Href="/algorithms">Algorithms</MudButton>
-        <MudButton>Games</MudButton>
-        <MudButton>About</MudButton>
-        <MudSwitch @bind-Value="_isDarkMode" Color="Color.Primary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode" />
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/Aishakhan17?tab=repositories" Target="_blank" />
-    </MudAppBar>
-    <div class="main-body">
-            @Body
-    </div>
-</MudLayout>
+<div class="app-shell">
+    <header class="site-header">
+        <a class="brand font-display" href="/">
+            Aisha's Laboratory
+        </a>
 
-@code{
-    private bool _isDarkMode = false;
-    private bool _isBrowser;
-    protected override void OnInitialized()
+        <nav class="main-nav" aria-label="Main navigation">
+            <NavLink href="/algorithms" class="nav-link">
+                Algorithms
+            </NavLink>
+
+            <NavLink href="/games" class="nav-link">
+                Games
+            </NavLink>
+
+            <NavLink href="/about" class="nav-link">
+                About
+            </NavLink>
+        </nav>
+
+        <div class="header-actions">
+            <button class="theme-toggle"
+                    @onclick="ToggleTheme"
+                    aria-label="Toggle dark mode">
+                @(_isDarkMode ? "☀ Light" : "☾ Dark")
+            </button>
+
+            <a class="github-link"
+               href="https://github.com/Aishakhan17?tab=repositories"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="GitHub repositories">
+                GitHub ↗
+            </a>
+        </div>
+    </header>
+
+    <main class="main-body">
+        @Body
+    </main>
+</div>
+
+@code {
+    private bool _isDarkMode;
+
+    private void ToggleTheme()
     {
-        _isBrowser = OperatingSystem.IsBrowser();
-        Console.WriteLine($"_isBrowser {_isBrowser}");
+        _isDarkMode = !_isDarkMode;
     }
-
-
 }

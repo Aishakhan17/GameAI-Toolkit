@@ -1,5 +1,25 @@
 @page "/algorithms"
+
+@using GameAIToolkit.Client.Components.Data;
+
+
 <PageTitle>Algorithms</PageTitle>
+<div class="page-container">
+    @foreach (var entry in AlgorithmData.AlgorithmTopicsList)
+    {
+
+        <h1 class="mt-5">@entry.Key</h1>
+        <div class="tile-display">
+        @foreach (var value in entry.Value)
+            {
+                <div class="card">
+                    <a class="panel__title lesson-title fill-div" href="@value.Value">@value.Key</a>
+                    <p>Here is some random bs about this card</p>
+                </div>   
+            }
+        </div>
+    }
+</div>
 
 
 

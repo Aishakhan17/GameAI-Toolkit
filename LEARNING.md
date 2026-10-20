@@ -2,8 +2,8 @@
 
 ### Render Modes in Blazor
 
-Interactive Server, Interactive WebAssembly and InteractiveAuto
-For apps that implement interactive client side (webassembly or auto) and implement render mode via the Routes component and move layout and navigation files to
+**Interactive Server, Interactive WebAssembly and InteractiveAuto**
+For apps that implement interactive client side (webassembly or auto) and implement blanket render mode via the Routes component: move layout and navigation files to
 .Client folder. i.e. Pages and Layout files need to be moved to Client side. Each will need its own \_Import.razor to manage namespaces.
 If setting render mode via Routes, add it to Headoutlet as well [https://learn.microsoft.com/en-us/aspnet/core/blazor/components/render-modes?view=aspnetcore-10.0]
 
@@ -12,8 +12,12 @@ Render modes propagate down the component hierarchy. Child components inherit th
 **Hierarchy Restriction:**
 A child component cannot switch to a different interactive render mode than its parent.
 
+**General Notes**
+I have now decided to not impose a blanket render mode and apply one page wise. Previously, I had applied interactive auto, but there were interactive elements on the home page that wouldn't function properly and/or there would be a lag and a flicker in the UI. Page was first rendered via interactive server and then via wasm. State lost when then switch took place. Since, I haven't implemented any state saving behavior in the app and also because I want faster load times for the start up pages, these pages are now static server rendered. Other pages such as visualization pages, are on interactive webassembly to capitalize on user machines. May reconsider interactive auto (is it even needed?) once state saving has been implemented as these pages collect user data.
+
 **Blazor Render Tree**
-Blazor creates its virtual DOM in its razor views using a virtual methon named BuildRenderTree
+Blazor creates its own virtual DOM using a virtual method named BuildRenderTree. It's a shadow representation known as the render tree and is how Blazor interacts with the DOM. No direct interaction. When you run other scripts that either interact with the DOM directly or work with their own copy of the DOM, you might end up with state mismatch on the screen. Only use outside scripts if an object does not interact with Blazor.You can still safely run outside scripts to interact with objects that Blazor knows about provided you follow guidelines (JSinterop and Element reference.)
+
 **Blazor Components**
 Blazor components are .NET classes that represent a reusable piece of UI. Each component maintains its own state and specifies its own rendering logic, which can include rendering other components. Components specify event handlers for specific user interactions to update the component's state.
 After a component handles an event, Blazor renders the component and keeps track of what changed in the rendered output. Components don't render directly to the Document Object Model (DOM). They instead render to an in-memory representation of the DOM called a RenderTree so that Blazor can track the changes. Blazor compares the newly rendered output with the previous output to calculate a UI diff that it then applies efficiently to the DOM.
@@ -26,6 +30,10 @@ Adjacency lists? Not C# specific but came across this term. Basically just a gra
 Classes nested inside a component's code block need to be instantiated manually (obv?).
 **Inheritance**
 So far, I have used direct instantiation by the parent component in the case of where there's a relationship. Otherwise, it can be instantiated in the on parameters set call where the child can build its own class.
+
+**Snapshot vs Deltas:**
+As this is a visual debugger, decide the app should use snapshots or delta. Or both? Been reading on how Github works under the hood as the snapshots and deltas reminded me of VCS. Might make a seperate document for what I have learnt.
+
 **General**
 Still getting the hang of syntax, language is more verbose but have made some progress. Have tried minimizing use of AI - trying to read through stackoverflow and blogs like the good old days.
 

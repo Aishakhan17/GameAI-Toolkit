@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MudBlazor" Version="9.9.0" />
     <ProjectReference Include="..\GameAIToolkit.Client\GameAIToolkit.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.11" />
   </ItemGroup>

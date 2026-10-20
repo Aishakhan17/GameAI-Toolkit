@@ -8,6 +8,7 @@ public partial class ForceDirectedGraph
     private List<TreeEdge.Edge> Edges = new();
     private bool ParseInput()
     {
+        Console.WriteLine("Parsing input");
         //bool value to track if raw input has been parsed successfully
         var parsed = false;
         Nodes.Clear();
